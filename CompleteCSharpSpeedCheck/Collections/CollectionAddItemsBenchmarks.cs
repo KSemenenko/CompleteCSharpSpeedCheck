@@ -6,12 +6,11 @@ using BenchmarkDotNet.Attributes;
 namespace CompleteCSharpSpeedCheck.Collections
 {
     [MemoryDiagnoser]
-    //[NativeMemoryProfiler]
     public class CollectionAddItemsBenchmarks
     {
-        private Random _rnd = new Random();
+        private Random _rnd = new Random(100);
         
-        [Params(1, 128, 1000, 2233)]
+        [Params(1, 128, 1050, 2048)]
         public int ItemsCount;
 
         private int GetRandomInt()
@@ -34,27 +33,7 @@ namespace CompleteCSharpSpeedCheck.Collections
                 collection[i] = GetRandomInt();
             }
         }
-        
-        [Benchmark]
-        public void ArrayList()
-        {
-            var collection = new ArrayList();
-            for (var i = 0; i < ItemsCount; i++)
-            {
-                collection.Add(GetRandomInt() as object);
-            }
-        }
-        
-        [Benchmark]
-        public void ArrayListWithCapacity()
-        {
-            var collection = new ArrayList(ItemsCount);
-            for (var i = 0; i < ItemsCount; i++)
-            {
-                collection.Add(GetRandomInt() as object);
-            }
-        }
-        
+
         [Benchmark]
         public void List()
         {
@@ -173,6 +152,26 @@ namespace CompleteCSharpSpeedCheck.Collections
             for (int i = 0; i < ItemsCount; i++)
             {
                 collection.AddLast(GetRandomInt());
+            }
+        }
+        
+        [Benchmark]
+        public void ArrayList()
+        {
+            var collection = new ArrayList();
+            for (var i = 0; i < ItemsCount; i++)
+            {
+                collection.Add(GetRandomInt() as object);
+            }
+        }
+        
+        [Benchmark]
+        public void ArrayListWithCapacity()
+        {
+            var collection = new ArrayList(ItemsCount);
+            for (var i = 0; i < ItemsCount; i++)
+            {
+                collection.Add(GetRandomInt() as object);
             }
         }
         
