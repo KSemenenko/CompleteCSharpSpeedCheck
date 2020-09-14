@@ -20,7 +20,7 @@ namespace CompleteCSharpSpeedCheck.TPL
             public int Value { get; set; }
         }
 
-        [Params(1, 100, 150, 200, 250, 500, 1000, 3000)]
+        [Params(1, 100, 150, 200, 250, 500, 1000)]
         public int ItemsCount;
 
         private List<Payload> _list;
@@ -94,6 +94,22 @@ namespace CompleteCSharpSpeedCheck.TPL
                 item.Key = GenerateString(System.DateTime.Now.Second);
                 item.Value = item.Key.Length * 2 * 3;
             });
+        }
+
+        [Benchmark]
+        public void TaskSimple()
+        {
+            var tasks = new List<Task>();
+
+            foreach (var item in _list)
+            {
+                tasks.Add(Task.Run(() => {
+                    item.Key = GenerateString(System.DateTime.Now.Second);
+                    item.Value = item.Key.Length * 2 * 3;
+                }));
+            }
+
+            Task.WhenAll(tasks).Wait();
         }
 
         [Benchmark]
@@ -177,6 +193,23 @@ namespace CompleteCSharpSpeedCheck.TPL
                 item.Key = GenerateString(System.DateTime.Now.Second);
                 item.Value = item.Key.Length * 2 * 3;
             });
+        }
+
+        [Benchmark]
+        public void Tasks()
+        {
+            var tasks = new List<Task>();
+
+            foreach (var item in _list)
+            {
+                tasks.Add(Task.Run(() => {
+                    System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(2));
+                    item.Key = GenerateString(System.DateTime.Now.Second);
+                    item.Value = item.Key.Length * 2 * 3;
+                }));
+            }
+
+            Task.WhenAll(tasks).Wait();
         }
 
         [Benchmark]
